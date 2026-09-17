@@ -1,0 +1,138 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  engineType      = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Modalidad {
+  REMOTO
+  HIBRIDO
+  PRESENCIAL
+}
+
+enum EstadoCandidatura {
+  GUARDADA
+  APLICADA
+  ENTREVISTA
+  OFERTA
+  RECHAZADA
+}
+
+enum TipoActividad {
+  CANDIDATURA
+  ENTREVISTA
+  OFERTA
+  SISTEMA
+}
+
+model Usuario {
+  id            String   @id @default(cuid())
+  nombre        String
+  email         String   @unique
+  passwordHash  String
+  ubicacion     String?
+  puestoDeseado String?
+  experiencia   String?
+  tecnologias   String[] @default([])
+  formacion     Formacion[]
+  preferencias  PreferenciasEmpleo?
+  candidaturas  Candidatura[]
+  cvs           Cv[]
+  actividades   Actividad[]
+  configuracion Configuracion?
+  createdAt     DateTime @updatedAt @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Formacion {
+  id        String  @id @default(cuid())
+  titulo    String
+  centro    String
+  periodo   String
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId String
+}
+
+model PreferenciasEmpleo {
+  id              String   @id @default(cuid())
+  modalidad       String
+  salarioMinimo   Int
+  disponibilidad  String
+  tiposContrato   String[] @default([])
+  usuario         Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId       String   @unique
+}
+
+model Oferta {
+  id                String        @id @default(cuid())
+  puesto            String
+  empresa            String
+  logoIniciales      String
+  ubicacion          String
+  modalidad          Modalidad
+  salarioMin         Int
+  salarioMax         Int
+  fechaPublicacion   DateTime      @default(now())
+  match              Int           @default(0)
+  tecnologias        String[]      @default([])
+  experiencia        String
+  descripcionCorta   String
+  fuente             String        @default("manual")
+  urlOriginal        String?
+  candidaturas       Candidatura[]
+  createdAt          DateTime      @default(now())
+}
+
+model Candidatura {
+  id                  String            @id @default(cuid())
+  estado              EstadoCandidatura @default(GUARDADA)
+  notas               String?
+  fechaActualizacion  DateTime          @updatedAt
+  oferta              Oferta            @relation(fields: [ofertaId], references: [id], onDelete: Cascade)
+  ofertaId            String
+  usuario             Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId           String
+  createdAt           DateTime          @default(now())
+
+  @@unique([ofertaId, usuarioId])
+}
+
+model Cv {
+  id                  String   @id @default(cuid())
+  nombreArchivo        String
+  urlArchivo           String
+  tamanoBytes          Int
+  esActual             Boolean  @default(false)
+  usuario              Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId            String
+  createdAt            DateTime @default(now())
+}
+
+model Actividad {
+  id          String        @id @default(cuid())
+  tipo        TipoActividad
+  titulo      String
+  descripcion String
+  usuario     Usuario       @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId   String
+  createdAt   DateTime      @default(now())
+}
+
+model Configuracion {
+  id                          String   @id @default(cuid())
+  idioma                      String   @default("es")
+  zonaHoraria                 String   @default("Europe/Madrid")
+  notifNuevasOfertas          Boolean  @default(true)
+  notifRecordatorioEntrevista Boolean  @default(true)
+  notifResumenSemanal         Boolean  @default(false)
+  busquedaAutomatica          Boolean  @default(true)
+  soloConSalario               Boolean  @default(false)
+  tema                        String   @default("claro")
+  usuario                     Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId                   String   @unique
+}
