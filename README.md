@@ -51,11 +51,13 @@ Saved → Applied → Interview → Offer
 Users can move applications between stages and add notes to each application.
 
 📄 CV Management
+
 Upload CVs in PDF, DOC, or DOCX format
 Store and manage multiple CV versions
 Download previously uploaded CVs
 Select the current CV
 AI-powered CV analysis
+
 🤖 AI Features
 
 The application integrates the Anthropic API to provide:
@@ -66,7 +68,9 @@ Strength identification
 ATS-oriented analysis
 Job/CV compatibility analysis
 Match percentage between the candidate profile and job offers
+
 🔐 Authentication & Security
+
 User registration and login
 JWT-based authentication
 Password hashing with bcrypt
@@ -76,12 +80,16 @@ Authentication rate limiting
 HTTP security headers with Helmet
 Environment variable validation
 Production-oriented error handling
+
 ⚙️ User Preferences
+
 Employment preferences
 Application settings
 Notification preferences
 Theme configuration
+
 🛠️ Tech Stack
+
 Frontend
 React 19
 TypeScript
@@ -109,6 +117,7 @@ bcrypt
 Helmet
 Rate limiting
 Environment validation
+
 🏗️ Architecture
 
 The application follows a separated frontend/backend architecture:
@@ -135,7 +144,9 @@ The application follows a separated frontend/backend architecture:
 │ PostgreSQL   │  │ Anthropic API│
 │             │  │    Claude    │
 └─────────────┘  └──────────────┘
+
 📁 Project Structure
+
 job-agent/
 │
 ├── src/
@@ -163,16 +174,26 @@ job-agent/
 ├── package.json
 └── README.md
 
-🖥️ Screenshots
-Dashboard
+## 🖥️ Screenshots
 
-Job Offers
+### Dashboard
 
-Application Kanban
+![Dashboard](./screenshots/dashboard.png)
 
-CV & AI Analysis
+### Job Offers
+
+![Job Offers](./screenshots/jobs.png)
+
+### Application Kanban
+
+![Application Kanban](./screenshots/application-tracking.png)
+
+### CV & AI Analysis
+
+![CV & AI Analysis](./screenshots/cv.png)
 
 🔄 Main User Flow
+
 Register / Login
        │
        ▼
