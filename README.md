@@ -1,210 +1,427 @@
 # Job-Agent
 
-Aplicación web para gestionar y automatizar la búsqueda de empleo: sigue ofertas, organiza tus candidaturas en un Kanban, analiza tu CV con IA y descubre ofertas reales, todo desde un único panel.
+> AI-powered job search and career management platform built as a full-stack portfolio project.
 
-Construido en fases incrementales como proyecto de portfolio full-stack.
+Job-Agent is a web application designed to centralize the job-search process in one place.
 
-## Índice
+It allows users to discover and save job opportunities, manage applications through a Kanban workflow, upload and analyze their CV with AI, and calculate how well their profile matches available job offers.
 
-- [Funcionalidades](#funcionalidades)
-- [Stack](#stack)
-- [Estructura del repositorio](#estructura-del-repositorio)
-- [Puesta en marcha (desarrollo)](#puesta-en-marcha-desarrollo)
-- [Variables de entorno](#variables-de-entorno)
-- [Despliegue con Docker](#despliegue-con-docker)
-- [Referencia de la API](#referencia-de-la-api)
-- [Seguridad y producción](#seguridad-y-producción)
-- [Historial de fases](#historial-de-fases)
-- [Licencia](#licencia)
+The project was developed incrementally, starting with the frontend and evolving into a complete full-stack application with a REST API, relational database, authentication, AI integration and Docker-based infrastructure.
 
-## Funcionalidades
+---
 
-- **Dashboard** con métricas reales (ofertas guardadas, candidaturas, entrevistas) y actividad reciente.
-- **Ofertas**: listado con filtros, guardado con un clic, e **importación de ofertas reales de tecnología** desde una API pública de empleo.
-- **Kanban de candidaturas**: Guardada → Aplicada → Entrevista → Oferta → Rechazada.
-- **CV**: subida real de archivos (PDF/DOC/DOCX), descarga, historial de versiones, y **análisis con IA** (resumen, puntos fuertes, compatibilidad ATS).
-- **Matching con IA**: recalcula el porcentaje de encaje de cada oferta con tu perfil usando Claude.
-- **Autenticación** propia con JWT y contraseñas hasheadas con bcrypt.
-- **Configuración** de preferencias, notificaciones y tema, persistida de verdad.
+## 🚀 Overview
 
-## Stack
+Job-Agent addresses a common problem in the job-search process: information and applications are often scattered across different platforms and documents.
 
-**Frontend:** React 19 · TypeScript · Vite · Tailwind CSS v4 · React Router · Lucide React
-**Backend:** Node.js · Express · TypeScript · Prisma ORM · PostgreSQL · JWT · bcrypt
-**IA:** Anthropic API (`@anthropic-ai/sdk`)
-**Infraestructura:** Docker, Docker Compose, Nginx
+The application brings these workflows together into a single dashboard:
 
-## Estructura del repositorio
+**Discover → Analyze → Save → Apply → Track → Improve**
 
-```
+The project focuses on demonstrating practical full-stack development skills, including frontend architecture, backend development, database design, authentication, API integration, AI integration and deployment-oriented infrastructure.
+
+---
+
+## ✨ Features
+
+### 📊 Dashboard
+
+- Overview of saved jobs and applications
+- Application statistics
+- Interview and offer tracking
+- Recent activity
+
+### 💼 Job Management
+
+- Browse available technology job opportunities
+- Filter job listings
+- Save interesting opportunities
+- Import real job offers through a public employment API
+- Avoid duplicate job entries
+
+### 📋 Application Tracking
+
+Kanban workflow for managing applications:
+
+```text
+Saved → Applied → Interview → Offer
+                         ↘
+                        Rejected
+
+Users can move applications between stages and add notes to each application.
+
+📄 CV Management
+Upload CVs in PDF, DOC or DOCX format
+Store and manage multiple CV versions
+Download previously uploaded CVs
+Select the current CV
+AI-powered CV analysis
+
+🤖 AI Features
+
+The application integrates the Anthropic API to provide:
+
+CV analysis
+CV summaries
+Strength identification
+ATS-oriented analysis
+Job/CV compatibility analysis
+Match percentage between the candidate profile and job offers
+
+🔐 Authentication & Security
+User registration and login
+JWT-based authentication
+Password hashing with bcrypt
+Protected API routes
+User ownership validation
+Authentication rate limiting
+HTTP security headers with Helmet
+Environment variable validation
+Production-oriented error handling
+
+⚙️ User Preferences
+Employment preferences
+Application settings
+Notification preferences
+Theme configuration
+
+🛠️ Tech Stack
+Frontend
+React 19
+TypeScript
+Vite
+Tailwind CSS
+React Router
+Lucide React
+Backend
+Node.js
+Express
+TypeScript
+REST API
+Prisma ORM
+PostgreSQL
+AI
+Anthropic API
+Claude
+Infrastructure
+Docker
+Docker Compose
+Nginx
+Security
+JWT
+bcrypt
+Helmet
+Rate limiting
+Environment validation
+
+🏗️ Architecture
+
+The application follows a separated frontend/backend architecture:
+
+┌─────────────────────────────┐
+│          Frontend           │
+│                             │
+│ React + TypeScript + Vite   │
+│ Tailwind CSS + React Router │
+└──────────────┬──────────────┘
+               │
+               │ REST API
+               ▼
+┌─────────────────────────────┐
+│           Backend           │
+│                             │
+│ Node.js + Express + TS      │
+│ JWT + Security Middleware   │
+└──────────────┬──────────────┘
+               │
+       ┌───────┴────────┐
+       ▼                ▼
+┌─────────────┐  ┌──────────────┐
+│ PostgreSQL  │  │ Anthropic API│
+│             │  │    Claude    │
+└─────────────┘  └──────────────┘
+
+📁 Project Structure
 job-agent/
-├── src/                    Frontend (React + TypeScript + Vite)
-│   ├── components/         Componentes por sección (dashboard, ofertas, candidaturas, cv, auth, ui...)
-│   ├── pages/               Páginas de cada ruta
-│   ├── hooks/                Hooks que hablan con la API (useOfertas, useCandidaturas, useAi...)
-│   ├── context/              AuthContext (sesión, token)
-│   ├── lib/                  Cliente HTTP (api.ts) y adaptadores backend↔UI (adapters.ts)
-│   └── types/                 Tipos compartidos
-├── server/                 Backend (Express + TypeScript + Prisma)
+│
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── hooks/
+│   ├── context/
+│   ├── lib/
+│   └── types/
+│
+├── server/
 │   ├── src/
-│   │   ├── routes/            Endpoints REST por dominio
-│   │   ├── middleware/        Auth, rate limiting, manejo de errores
-│   │   ├── lib/                 Prisma, JWT, Anthropic, subida de archivos, scraping
-│   │   └── config/env.ts        Validación centralizada de variables de entorno
-│   ├── prisma/schema.prisma   Modelo de datos
-│   └── Dockerfile
-├── Dockerfile              Build del frontend (Vite + Nginx)
-├── docker-compose.yml      Orquesta Postgres + backend + frontend
-└── nginx.conf
-```
+│   │   ├── routes/
+│   │   ├── middleware/
+│   │   ├── lib/
+│   │   └── config/
+│   │
+│   └── prisma/
+│       └── schema.prisma
+│
+├── public/
+├── Dockerfile
+├── docker-compose.yml
+├── nginx.conf
+├── package.json
+└── README.md
 
-## Puesta en marcha (desarrollo)
+🖥️ Screenshots
 
-Requisitos: Node.js 20+ y PostgreSQL corriendo localmente (o accesible por red).
+Screenshots showcasing the main application screens will be added here.
 
-### 1. Backend
+Dashboard
 
-```bash
+Add screenshot here
+
+Job Offers
+
+Add screenshot here
+
+Application Kanban
+
+Add screenshot here
+
+CV & AI Analysis
+
+Add screenshot here
+
+🔄 Main User Flow
+Register / Login
+       │
+       ▼
+   Dashboard
+       │
+       ├───────────────┐
+       ▼               ▼
+   Job Offers        Profile
+       │
+       ▼
+   Save Job
+       │
+       ▼
+   Application
+       │
+       ▼
+    Kanban
+       │
+       ├── Applied
+       ├── Interview
+       ├── Offer
+       └── Rejected
+       
+       +----------------------+
+       │
+       ▼
+     Upload CV
+       │
+       ▼
+   AI Analysis
+       │
+       ▼
+   Job Matching
+
+🔌 API
+
+The backend exposes a REST API organized by domain.
+
+Authentication
+Method	Endpoint	Description
+POST	/api/auth/register	Register a new user
+POST	/api/auth/login	Authenticate a user
+GET	/api/auth/me	Get authenticated user
+Jobs
+Method	Endpoint	Description
+GET	/api/ofertas	Get available jobs
+GET	/api/ofertas/:id	Get job details
+POST	/api/ofertas	Create a job
+POST	/api/ofertas/importar	Import real job offers
+Applications
+Method	Endpoint	Description
+GET	/api/candidaturas	Get user applications
+POST	/api/candidaturas	Save a job as an application
+PATCH	/api/candidaturas/:id/estado	Change application status
+PATCH	/api/candidaturas/:id	Update application notes
+DELETE	/api/candidaturas/:id	Delete an application
+CV & AI
+Method	Endpoint	Description
+GET	/api/cv	Get uploaded CVs
+POST	/api/cv	Upload a CV
+GET	/api/cv/:id/download	Download a CV
+DELETE	/api/cv/:id	Delete a CV
+POST	/api/ai/analizar-cv	Analyze a CV with AI
+POST	/api/ai/matching	Calculate job/profile matching
+
+🔒 Security
+
+Security was considered throughout the backend implementation.
+
+The application includes:
+
+JWT authentication
+bcrypt password hashing
+Protected routes
+User ownership validation
+Authentication rate limiting
+Helmet security headers
+Environment variable validation
+Production error handling
+Graceful server shutdown
+Database health checks
+
+Sensitive configuration is managed through environment variables and is not committed to the repository.
+
+⚙️ Local Development
+Requirements
+Node.js 20+
+PostgreSQL
+npm
+1. Clone the repository
+git clone https://github.com/GonzaloMAF/job-agent.git
+cd job-agent
+2. Install frontend dependencies
+npm install
+3. Configure the backend
 cd server
 npm install
-cp .env.example .env        # ajusta DATABASE_URL y genera un JWT_SECRET propio
+
+Create a .env file based on .env.example and configure:
+
+DATABASE_URL=
+JWT_SECRET=
+PORT=4000
+CORS_ORIGIN=http://localhost:5173
+ANTHROPIC_API_KEY=
+4. Initialize Prisma
 npx prisma generate
-npx prisma migrate dev --name init
-npm run db:seed             # opcional: datos de ejemplo
+npx prisma migrate dev
+
+Optional:
+
+npm run db:seed
+5. Start the backend
 npm run dev
-```
 
-La API queda en `http://localhost:4000` (comprueba `http://localhost:4000/api/health`).
+The API will be available at:
 
-Usuario de prueba tras el seed: `laura.mendez@ejemplo.com` / `Password123!`
+http://localhost:4000
+6. Start the frontend
 
-### 2. Frontend
+From the project root:
 
-```bash
-# en otra terminal, desde la raíz del repo
-npm install
-cp .env.example .env
 npm run dev
-```
 
-La app queda en `http://localhost:5173`.
+The application will be available at:
 
-## Variables de entorno
+http://localhost:5173
 
-### `server/.env`
+🐳 Docker
 
-| Variable | Obligatoria | Descripción |
-|---|---|---|
-| `DATABASE_URL` | Sí | Cadena de conexión de PostgreSQL |
-| `JWT_SECRET` | Sí | Secreto para firmar los tokens. En producción, mínimo 32 caracteres y no puede parecer un valor de ejemplo (el servidor rechaza arrancar si lo detecta) |
-| `JWT_EXPIRES_IN` | No (`7d`) | Duración del token de sesión |
-| `PORT` | No (`4000`) | Puerto del servidor |
-| `CORS_ORIGIN` | No (`http://localhost:5173`) | Origen permitido para peticiones del frontend |
-| `ANTHROPIC_API_KEY` | No | Habilita análisis de CV y matching con IA. Sin ella, esas rutas devuelven 503 sin afectar al resto de la app |
-| `ANTHROPIC_MODEL` | No (`claude-sonnet-5`) | Modelo de Claude a usar |
-| `NODE_ENV` | No (`development`) | `production` activa las validaciones estrictas de seguridad |
+The project includes Docker configuration for the frontend, backend and PostgreSQL database.
 
-### `.env` (raíz, frontend)
-
-| Variable | Obligatoria | Descripción |
-|---|---|---|
-| `VITE_API_URL` | No (`http://localhost:4000`) | URL base de la API. En Docker/producción se fija en tiempo de build |
-
-## Despliegue con Docker
-
-```bash
-# Desde la raíz del repo, crea un .env con al menos JWT_SECRET
-echo "JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(48).toString('hex'))")" > .env
+From the project root:
 
 docker compose up --build
-```
 
-Esto levanta tres servicios:
+The environment contains:
 
-| Servicio | Puerto | Descripción |
-|---|---|---|
-| `db` | 5432 | PostgreSQL 16, con volumen persistente y healthcheck |
-| `server` | 4000 | API, aplica migraciones automáticamente al arrancar (`prisma migrate deploy`) |
-| `web` | 5173 → 80 | Frontend construido y servido con Nginx (soporta las rutas de React Router) |
+Frontend     → Nginx
+Backend      → Node.js + Express
+Database     → PostgreSQL
 
-Variables opcionales que puedes definir en el `.env` de la raíz antes de levantar Docker: `POSTGRES_PASSWORD`, `JWT_EXPIRES_IN`, `CORS_ORIGIN`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `VITE_API_URL`.
+🗄️ Database
 
-> **Nota de este entorno de desarrollo:** los `Dockerfile` y el `docker-compose.yml` se validaron con `dockerfilelint` y revisando manualmente la configuración (el daemon de Docker sí funciona aquí, pero el sandbox donde se generó este proyecto bloquea la descarga de imágenes desde Docker Hub, así que el build completo no se pudo ejecutar de extremo a extremo en este entorno concreto). Pruébalo con `docker compose up --build` y abre un issue si algo no cuadra.
+The application uses PostgreSQL with Prisma ORM.
 
-## Referencia de la API
+The main entities include:
 
-Todas las rutas devuelven JSON. Las marcadas como "🔒" requieren el header `Authorization: Bearer <token>`.
+User
+ ├── Profile
+ ├── Preferences
+ ├── CVs
+ ├── Applications
+ ├── Activity
+ └── Settings
 
-### Autenticación
+Job
+ └── Applications
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| POST | `/api/auth/register` | `{ nombre, email, password }` → `{ token, usuario }` |
-| POST | `/api/auth/login` | `{ email, password }` → `{ token, usuario }` |
-| GET 🔒 | `/api/auth/me` | Usuario autenticado |
+The database schema is defined in:
 
-### Ofertas
+server/prisma/schema.prisma
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/api/ofertas` | Lista de ofertas (admite filtros por query string) |
-| GET | `/api/ofertas/:id` | Detalle de una oferta |
-| POST | `/api/ofertas` | Crear una oferta manualmente |
-| POST 🔒 | `/api/ofertas/importar` | Importa ofertas reales de tecnología desde una API pública de empleo, evitando duplicados |
+📈 Development Process
 
-### Candidaturas, dashboard, perfil, CV y configuración
+The project was developed incrementally through several stages:
 
-Todas requieren 🔒 y operan siempre sobre el usuario autenticado (no se pasa `usuarioId` a mano).
+Frontend architecture and UI
+Backend REST API
+PostgreSQL database
+Prisma ORM
+JWT authentication
+Frontend/API integration
+CV upload and management
+AI-powered CV analysis
+AI job matching
+Real job import
+Security improvements
+Docker infrastructure
+Production-oriented configuration
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/api/candidaturas` | Candidaturas del usuario, con la oferta incluida |
-| POST | `/api/candidaturas` | Guardar una oferta (crea una candidatura) |
-| PATCH | `/api/candidaturas/:id/estado` | Mover de columna en el Kanban |
-| PATCH | `/api/candidaturas/:id` | Actualizar notas |
-| DELETE | `/api/candidaturas/:id` | Eliminar |
-| GET | `/api/dashboard/stats` | Métricas del dashboard |
-| GET | `/api/dashboard/actividad` | Actividad reciente |
-| GET / PATCH | `/api/perfil` | Perfil del usuario (con formación y preferencias) |
-| PATCH | `/api/perfil/preferencias` | Preferencias de empleo |
-| GET | `/api/cv` | CVs del usuario |
-| POST | `/api/cv` | Subir un CV real (`multipart/form-data`, campo `cv`; PDF/DOC/DOCX, máx. 5 MB) |
-| GET | `/api/cv/:id/download` | Descargar un CV propio |
-| DELETE | `/api/cv/:id` | Eliminar (promociona el más reciente si era el actual) |
-| GET / PATCH | `/api/configuracion` | Preferencias de la app |
-| POST | `/api/ai/analizar-cv` | Análisis del CV actual (debe ser PDF) con Claude |
-| POST | `/api/ai/matching` | Recalcula el match de todas las ofertas con Claude según tu perfil |
+This incremental approach allowed each part of the application to be developed and integrated progressively.
 
-### Modelo de datos
+🧠 Technical Highlights
 
-Definido en `server/prisma/schema.prisma`: `Usuario`, `Oferta`, `Candidatura`, `Cv`, `Actividad`, `Configuracion`, `Formacion`, `PreferenciasEmpleo`. El diseño relacional (claves foráneas, restricciones `UNIQUE`, borrado en cascada) se validó directamente contra PostgreSQL durante el desarrollo.
+This project demonstrates experience with:
 
-## Seguridad y producción
+Full-stack web application architecture
+React component architecture
+TypeScript
+REST API design
+Relational database design
+ORM usage with Prisma
+Authentication and authorization
+File upload handling
+Third-party API integration
+AI API integration
+Secure environment configuration
+Docker and container orchestration
+Nginx
+Git and GitHub
 
-- Contraseñas hasheadas con bcrypt; sesiones con JWT.
-- Cada candidatura/CV verifica pertenencia al usuario autenticado antes de leer, modificar o borrar.
-- `helmet`, `compression` y rate limiting (20 intentos/15 min) en `/api/auth`.
-- Validación de variables de entorno al arrancar: en producción, rechaza un `JWT_SECRET` corto o de ejemplo en vez de arrancar de forma insegura.
-- `/api/health` comprueba también la conexión a la base de datos.
-- Apagado ordenado (`SIGTERM`/`SIGINT`): cierra la conexión a la base de datos antes de salir.
-- Los mensajes de error 500 no filtran detalles internos al cliente en producción.
-- **Advisory conocido:** `npm audit` reporta una vulnerabilidad de severidad alta (agotamiento de pila) en `deepmerge-ts`, dependencia transitiva de la CLI de `prisma` (usada solo en build/migraciones, no en el servidor en producción). La única corrección automática de `npm` implica bajar a una versión antigua de Prisma incompatible con el adaptador de conexión (`@prisma/adapter-pg`) que usa este proyecto; se documenta aquí en vez de aplicar un downgrade que rompería la app. Revisa [el advisory](https://github.com/advisories/GHSA-ggr8-5vv4-36mx) antes de desplegar si te preocupa.
+🚧 Roadmap
 
-## Historial de fases
+Future improvements may include:
 
-| Fase | Contenido |
-|---|---|
-| 1 | Frontend y estructura base (datos mock) |
-| 2 | Backend y base de datos (Express + PostgreSQL + Prisma) |
-| 3 | Autenticación (JWT + bcrypt) |
-| 4 | Frontend conectado a la API real |
-| 5 | Subida real de CV con almacenamiento de archivos |
-| 6 | Integración con IA: análisis de CV y matching de ofertas |
-| 7 | Importación de ofertas reales desde una API pública de empleo |
-| 8 | Preparación para producción: seguridad, Docker, documentación |
+Email notifications
+More advanced job search filters
+Improved profile management
+Automated job recommendations
+Additional AI-powered career tools
+Production deployment
+Automated testing and CI/CD
 
-Pendiente para futuras fases: edición de perfil desde la UI, notificaciones por email.
+📄 License
 
-## Licencia
+This project is licensed under the MIT License.
 
-MIT — ver [LICENSE](./LICENSE).
+👨‍💻 Author
+
+Gonzalo Manuel Árgueda Fernández
+
+Software Developer · DAM Graduate · Full-Stack & AI Projects
+
+Built as a personal portfolio project to explore modern web development, AI integration and production-oriented application architecture.
+
+
+**Ojo:** antes de subirlo, hay una cosa que quiero que hagamos después: comprobar que los nombres de los endpoints y algunas tecnologías del README coinciden exactamente con tu código actual. Así evitamos que el README diga que tienes una funcionalidad que finalmente no está implementada o que un endpoint tenga otro nombre.
+
+Para actualizarlo después de pegarlo:
+
+```bash
+git add README.md
+git commit -m "Improve portfolio README"
+git push
