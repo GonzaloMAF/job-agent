@@ -6,7 +6,7 @@ Job-Agent is a web application designed to centralize the job-search process in 
 
 It allows users to discover and save job opportunities, manage applications through a Kanban workflow, upload and analyze their CV with AI, and calculate how well their profile matches available job offers.
 
-The project was developed incrementally, starting with the frontend and evolving into a complete full-stack application with a REST API, relational database, authentication, AI integration and Docker-based infrastructure.
+The project was developed incrementally, starting with the frontend and evolving into a complete full-stack application with a REST API, relational database, authentication, AI integration, and Docker-based infrastructure.
 
 ---
 
@@ -18,7 +18,7 @@ The application brings these workflows together into a single dashboard:
 
 **Discover → Analyze → Save → Apply → Track → Improve**
 
-The project focuses on demonstrating practical full-stack development skills, including frontend architecture, backend development, database design, authentication, API integration, AI integration and deployment-oriented infrastructure.
+The project focuses on demonstrating practical full-stack development skills, including frontend architecture, backend development, database design, authentication, API integration, AI integration, and deployment-oriented infrastructure.
 
 ---
 
@@ -51,12 +51,11 @@ Saved → Applied → Interview → Offer
 Users can move applications between stages and add notes to each application.
 
 📄 CV Management
-Upload CVs in PDF, DOC or DOCX format
+Upload CVs in PDF, DOC, or DOCX format
 Store and manage multiple CV versions
 Download previously uploaded CVs
 Select the current CV
 AI-powered CV analysis
-
 🤖 AI Features
 
 The application integrates the Anthropic API to provide:
@@ -67,7 +66,6 @@ Strength identification
 ATS-oriented analysis
 Job/CV compatibility analysis
 Match percentage between the candidate profile and job offers
-
 🔐 Authentication & Security
 User registration and login
 JWT-based authentication
@@ -78,13 +76,11 @@ Authentication rate limiting
 HTTP security headers with Helmet
 Environment variable validation
 Production-oriented error handling
-
 ⚙️ User Preferences
 Employment preferences
 Application settings
 Notification preferences
 Theme configuration
-
 🛠️ Tech Stack
 Frontend
 React 19
@@ -113,7 +109,6 @@ bcrypt
 Helmet
 Rate limiting
 Environment validation
-
 🏗️ Architecture
 
 The application follows a separated frontend/backend architecture:
@@ -137,10 +132,9 @@ The application follows a separated frontend/backend architecture:
        ┌───────┴────────┐
        ▼                ▼
 ┌─────────────┐  ┌──────────────┐
-│ PostgreSQL  │  │ Anthropic API│
+│ PostgreSQL   │  │ Anthropic API│
 │             │  │    Claude    │
 └─────────────┘  └──────────────┘
-
 📁 Project Structure
 job-agent/
 │
@@ -169,23 +163,14 @@ job-agent/
 ├── package.json
 └── README.md
 
-## 🖥️ Screenshots
+🖥️ Screenshots
+Dashboard
 
-### Dashboard
+Job Offers
 
-![Dashboard](./screenshots/dashboard.png)
+Application Kanban
 
-### Job Offers
-
-![Job Offers](./screenshots/jobs.png)
-
-### Application Kanban
-
-![application-tracking](./screenshots/application-tracking.png)
-
-### CV & AI Analysis
-
-![CV & AI Analysis](./screenshots/cv.png)
+CV & AI Analysis
 
 🔄 Main User Flow
 Register / Login
@@ -210,7 +195,7 @@ Register / Login
        ├── Interview
        ├── Offer
        └── Rejected
-       
+
        +----------------------+
        │
        ▼
@@ -318,7 +303,7 @@ http://localhost:5173
 
 🐳 Docker
 
-The project includes Docker configuration for the frontend, backend and PostgreSQL database.
+The project includes Docker configuration for the frontend, backend, and PostgreSQL database.
 
 From the project root:
 
@@ -326,10 +311,9 @@ docker compose up --build
 
 The environment contains:
 
-Frontend     → Nginx
-Backend      → Node.js + Express
-Database     → PostgreSQL
-
+Frontend  → Nginx
+Backend   → Node.js + Express
+Database  → PostgreSQL
 🗄️ Database
 
 The application uses PostgreSQL with Prisma ORM.
@@ -401,19 +385,16 @@ Automated job recommendations
 Additional AI-powered career tools
 Production deployment
 Automated testing and CI/CD
-
 📄 License
 
 This project is licensed under the MIT License.
 
-MIT — ver [LICENSE](./LICENSE).
+MIT — see LICENSE.
 
-## 📸 Screenshots
+👨‍💻 Author
 
-![Dashboard](./screenshots/dashboard.png)
+Gonzalo Manuel Árgueda Fernández
 
-![Jobs](./screenshots/jobs.png)
+Software Developer · DAM Graduate · Full-Stack & AI Projects
 
-![CV](./screenshots/cv.png)
-
-![application-tracking](./screenshots/application-tracking.png)
+Built as a personal portfolio project to explore modern web development, AI integration, and production-oriented application architecture.
