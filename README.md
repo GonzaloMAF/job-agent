@@ -208,3 +208,13 @@ Pendiente para futuras fases: edición de perfil desde la UI, notificaciones por
 ## Licencia
 
 MIT — ver [LICENSE](./LICENSE).
+
+## 📸 Screenshots
+
+![Dashboard](./screenshots/dashboard.png)
+
+![Jobs](./screenshots/jobs.png)
+
+![CV](./screenshots/cv.png)
+
+![application-tracking](./screenshots/application-tracking.png)
