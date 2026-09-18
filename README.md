@@ -169,25 +169,23 @@ job-agent/
 ├── package.json
 └── README.md
 
-🖥️ Screenshots
+## 🖥️ Screenshots
 
-Screenshots showcasing the main application screens will be added here.
+### Dashboard
 
-Dashboard
+![Dashboard](./screenshots/dashboard.png)
 
-Add screenshot here
+### Job Offers
 
-Job Offers
+![Job Offers](./screenshots/jobs.png)
 
-Add screenshot here
+### Application Kanban
 
-Application Kanban
+![application-tracking](./screenshots/application-tracking.png)
 
-Add screenshot here
+### CV & AI Analysis
 
-CV & AI Analysis
-
-Add screenshot here
+![CV & AI Analysis](./screenshots/cv.png)
 
 🔄 Main User Flow
 Register / Login
