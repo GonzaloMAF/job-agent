@@ -173,6 +173,7 @@ job-agent/
 ├── nginx.conf
 ├── package.json
 └── README.md
+```
 
 ## 🖥️ Screenshots
 
