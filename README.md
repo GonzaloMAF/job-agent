@@ -179,19 +179,19 @@ job-agent/
 
 ### Dashboard
 
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](./screenshots/dashboard.jpg)
 
 ### Job Offers
 
-![Job Offers](./screenshots/jobs.png)
+![Job Offers](./screenshots/jobs.jpg)
 
 ### Application Kanban
 
-![Application Kanban](./screenshots/application-tracking.png)
+![Application Kanban](./screenshots/application-tracking.jpg)
 
 ### CV & AI Analysis
 
-![CV & AI Analysis](./screenshots/cv.png)
+![CV & AI Analysis](./screenshots/cv.jpg)
 
 🔄 Main User Flow
 
